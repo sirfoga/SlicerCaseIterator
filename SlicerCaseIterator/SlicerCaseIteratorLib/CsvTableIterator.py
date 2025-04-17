@@ -497,13 +497,17 @@ class CaseTableIteratorLogic(IteratorBase.IteratorLogicBase):
             self.logger.warning("Volume file %s does not exist, skipping...", fname)
             return None
 
-        load_success, im_node = slicer.util.loadVolume(im_path, returnNode=True)
+        date = os.path.basename(os.path.dirname(os.path.dirname(root)))
+        pacs_id = os.path.basename(
+            os.path.dirname(os.path.dirname(os.path.dirname(root)))
+        )
+
+        load_success, im_node = slicer.util.loadVolume(
+            im_path, {"name": f"PACS ID: {pacs_id} on {date}"}, returnNode=True
+        )
         if not load_success:
             self.logger.warning("Failed to load " + im_path)
             return None
-
-        # Use the file basename as the name for the loaded volume
-        im_node.SetName(os.path.splitext(os.path.basename(im_path))[0])
 
         return im_node
 
@@ -638,6 +642,10 @@ class CsvTableEventHandler(IteratorBase.IteratorEventHandlerBase):
                 segmentEditorWidget = (
                     slicer.modules.segmenteditor.widgetRepresentation().self().editor
                 )
+                segmentEditorWidget.setEffectNameOrder(["Paint", "Erase", "Scissors"])
+                segmentEditorWidget.unorderedEffectsVisible = False
+                segmentEditorWidget.show()
+
                 if ma is not None:
                     segmentEditorWidget.setSegmentationNode(ma)
                     segmentEditorWidget.setSourceVolumeNode(im)

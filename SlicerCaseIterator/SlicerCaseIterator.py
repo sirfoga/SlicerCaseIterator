@@ -233,6 +233,7 @@ class SlicerCaseIteratorWidget(ScriptedLoadableModuleWidget):
         self.onModeSelected("simple_csv_iteration")  # auto
 
         self._setGUIstate(csv_loaded=False)
+        self.showSingleModule()
 
     def setupViewSettingsArea(self):
         try:
@@ -426,6 +427,32 @@ class SlicerCaseIteratorWidget(ScriptedLoadableModuleWidget):
         for obs in self.observers:
             slicer.mrmlScene.RemoveObserver(obs)
         self.observers = []
+
+    def showSingleModule(self, singleModule=True):
+        if singleModule:
+            # We hide all toolbars, etc. which is inconvenient as a default startup setting,
+            # therefore disable saving of window setup.
+
+            import qt
+
+            settings = qt.QSettings()
+            settings.setValue("MainWindow/RestoreGeometry", "false")
+
+        keepToolbars = [
+            slicer.util.findChild(slicer.util.mainWindow(), toolbar)
+            for toolbar in ["ModuleSelectorToolBar", "MouseModeToolBar"]
+        ]
+        slicer.util.setToolbarsVisible(not singleModule, keepToolbars)
+
+        slicer.util.setMenuBarsVisible(not singleModule)
+        slicer.util.setDataProbeVisible(not singleModule)
+        slicer.util.setApplicationLogoVisible(not singleModule)
+        slicer.util.setModuleHelpSectionVisible(not singleModule)
+        slicer.util.setModulePanelTitleVisible(not singleModule)
+        slicer.util.setViewControllersVisible(not singleModule)
+
+        if singleModule:
+            slicer.util.setPythonConsoleVisible(False)
 
 
 # ------------------------------------------------------------------------------
