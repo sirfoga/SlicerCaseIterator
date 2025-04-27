@@ -449,10 +449,9 @@ class SlicerCaseIteratorWidget(ScriptedLoadableModuleWidget):
         slicer.util.setApplicationLogoVisible(not singleModule)
         slicer.util.setModuleHelpSectionVisible(not singleModule)
         slicer.util.setModulePanelTitleVisible(not singleModule)
-        slicer.util.setViewControllersVisible(not singleModule)
+        # sliders! slicer.util.setViewControllersVisible(not singleModule)
 
-        if singleModule:
-            slicer.util.setPythonConsoleVisible(False)
+        slicer.util.setPythonConsoleVisible(False)
 
 
 # ------------------------------------------------------------------------------
